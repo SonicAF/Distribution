@@ -19,6 +19,9 @@ namespace Distribution
             };
         }
 
+        /// <summary>
+        /// Распределяет сумму <see cref="pool"/> по <see cref="numbers"/>, от начала к концу
+        /// </summary>
         private static List<double> DistributeAscending(IEnumerable<double> numbers, double pool)
         {
             var remaining = pool;
@@ -26,6 +29,9 @@ namespace Distribution
             return numbers.Select(number => Extract(number, remaining, out remaining)).ToList();
         }
 
+        /// <summary>
+        /// Распределяет сумму <see cref="pool"/> по <see cref="numbers"/>, от конца к началу
+        /// </summary>
         private static List<double> DistributeDescending(IEnumerable<double> numbers, double pool)
         {
             var result = DistributeAscending(numbers.Reverse(), pool);
@@ -35,6 +41,9 @@ namespace Distribution
             return result;
         }
 
+        /// <summary>
+        /// Распределяет сумму <see cref="pool"/> по <see cref="source"/> пропорционально
+        /// </summary>
         private static List<double> DistributeProportional(IEnumerable<double> source, double pool)
         {
             var numbers = source.ToList();
@@ -46,6 +55,13 @@ namespace Distribution
             return numbers.Select(number => number * proportion).Select(number => accumulator.Round(number)).ToList();
         }
 
+
+        /// <summary>
+        /// Извлекает и возвращает <see cref="numberToExtract"/> или наибольшее возможное число из <see cref="pool"/>
+        /// </summary>
+        /// <param name="numberToExtract">Извлекаемое число</param>
+        /// <param name="pool">Сумма, из которой производится извлечение</param>
+        /// <param name="remaining">Остаток</param>
         private static double Extract(double numberToExtract, double pool, out double remaining)
         {
             remaining = pool - numberToExtract;
@@ -63,6 +79,9 @@ namespace Distribution
         }
     }
 
+    /// <summary>
+    /// Тип распределения
+    /// </summary>
     public enum DistributionType
     {
         Ascending,

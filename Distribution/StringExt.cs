@@ -6,12 +6,18 @@ namespace Distribution
     {
         private const int Signs = 2;
 
+        /// <summary>
+        /// Конвертирует строку в число и возвращает его с двумя знаками после запятой
+        /// </summary>
         public static double ToCurrency(this string source)
         {
             return Math.Round(double.Parse(source, System.Globalization.NumberStyles.AllowDecimalPoint), Signs,
                 MidpointRounding.AwayFromZero);
         }
 
+        /// <summary>
+        /// Возвращает тип распределения, если он содержится в строке
+        /// </summary>
         public static DistributionType ToDistributionType(this string source)
         {
             if (source.Contains("ПРОП"))
