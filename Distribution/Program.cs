@@ -7,19 +7,22 @@ namespace Distribution
     {
         static void Main(string[] args)
         {
+            Console.Write("Тип распределения - ");
+            var type = Console.ReadLine().ToDistributionType();
+
+            Console.Write("Сумма - ");
             var pool = Console.ReadLine().ToCurrency();
 
+            Console.Write("Суммы - ");
             var numbers = Console.ReadLine()
                 .Split(';')
                 .Select(token => token.ToCurrency())
                 .ToList();
 
-            var type = Console.ReadLine().ToDistributionType();
-
             var result = DistributionService.Distribute(numbers, pool, type);
 
-
-            Console.WriteLine("Hello World!");
+            result.ForEach(num => Console.Write(num + ";"));
+            Console.WriteLine();
         }
     }
 }

@@ -8,23 +8,15 @@ namespace Distribution
     {
         private const int Signs = 2;
 
-        private const double Unit = 0.01;
-
-        private const double Delta = 0.0001;
-
         public static List<double> Distribute(IEnumerable<double> numbers, double pool, DistributionType type)
         {
-            switch (type)
+            return type switch
             {
-                case DistributionType.Ascending:
-                    return DistributeAscending(numbers, pool);
-                case DistributionType.Descending:
-                    return DistributeDescending(numbers, pool);
-                case DistributionType.Proportional:
-                    return DistributeProportional(numbers, pool);
-            }
-
-            return new List<double>();
+                DistributionType.Ascending => DistributeAscending(numbers, pool),
+                DistributionType.Descending => DistributeDescending(numbers, pool),
+                DistributionType.Proportional => DistributeProportional(numbers, pool),
+                _ => new List<double>()
+            };
         }
 
         private static List<double> DistributeAscending(IEnumerable<double> numbers, double pool)
@@ -45,36 +37,13 @@ namespace Distribution
 
         private static List<double> DistributeProportional(IEnumerable<double> source, double pool)
         {
-            var result = new List<double>();
-
             var numbers = source.ToList();
-
-            var accumulated = 0d;
 
             var proportion = pool / numbers.Sum();
 
-            var distributions = numbers.Select(number => number * proportion);
+            var accumulator = new RoundingAccumulator(Signs);
 
-            foreach (var number in distributions)
-            {
-                var rounded = Math.Round(number, Signs);
-
-                accumulated += number - rounded;
-
-                if (Math.Abs(Math.Abs(accumulated) - Unit) < Delta)
-                {
-                    if (accumulated > 0)
-                    {
-                        accumulated -= 0.01;
-
-                        rounded += 0.01;
-                    }
-                }
-
-                result.Add(rounded);
-            }
-
-            return result;
+            return numbers.Select(number => number * proportion).Select(number => accumulator.Round(number)).ToList();
         }
 
         private static double Extract(double numberToExtract, double pool, out double remaining)
